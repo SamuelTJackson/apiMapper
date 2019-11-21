@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>test</title>
+    <script src="js/svg.js"></script>
 </head>
 <body>
+
+
 {{$height:=50}}
 {{$width:=100}}
 {{$yPosition:=10}}
-<svg height="1000" width="1000" >
+<svg xmlns="http://www.w3.org/2000/svg" height="1000" width="1000" onload="makeDraggable(evt)">
     {{ range $index, $element := .}}
         {{ if $element.Content}}
-        <g>
+        <g class="draggable">
             <rect x="0" y="{{boxY $height $index}}" width="{{$width}}" height="{{$height}}" fill="red"></rect>
             <text alignment-baseline="middle" x="0" y="{{textY $height $index}}" font-family="Verdana" font-size="12" fill="blue">{{ $element.Content }}</text>
         </g>
