@@ -14,7 +14,7 @@
     "unitCode": "GP",
     "accuracy": {
       "type": "Property",
-      "value": 0.95
+      "value": @{{//measurements/N02/accuracy}}@
     }
   },
   "refPointOfInterest": {

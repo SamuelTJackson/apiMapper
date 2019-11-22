@@ -2,9 +2,11 @@ package routes
 
 import (
 	"fmt"
+	"github.com/SamuelTJackson/apiMapper/db"
 	"github.com/SamuelTJackson/apiMapper/xmlParser"
 	"github.com/gorilla/mux"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -33,15 +35,23 @@ func Frontend(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func Api(w http.ResponseWriter, r *http.Request) {
-	if id := mux.Vars(r)["id"]; id == "" {
-		log.Print("id can not be empty!")
-		http.Error(w, "id can not be empty!", http.StatusBadRequest)
+	id := mux.Vars(r)["id"]
+	url, err := db.GetURLForID(id)
+	log.Println(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
-
-	root, err := xmlParser.ParseURL("http://suche.transparenz.hamburg.de/dataset/stadtrad-stationen-hamburg.xml")
-
-	fmt.Println(err)
-	if err := tmpl.Execute(w, root); err != nil {
-		fmt.Println(err)
+	request, err := http.NewRequest(r.Method, url, r.Body)
+	request.Header = r.Header
+	log.Println(r.Method)
+	client := http.Client{}
+	log.Println(r.URL.Host)
+	resp, err := client.Do(request)
+	if err != nil {
+		log.Println(resp)
 	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
 }
