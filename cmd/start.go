@@ -17,6 +17,10 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/SamuelTJackson/apiMapper/db"
+	"github.com/SamuelTJackson/apiMapper/routes"
+	"github.com/gorilla/mux"
+	"net/http"
 
 	"github.com/spf13/cobra"
 )
@@ -33,6 +37,13 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("start called")
+		db.ReadDataIntoMemory()
+
+		r := mux.NewRouter()
+		r.HandleFunc("/", routes.Frontend)
+		r.HandleFunc("/api/{id}", routes.Api)
+		http.ListenAndServe(":9999", r)
+
 	},
 }
 
